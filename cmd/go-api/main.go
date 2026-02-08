@@ -36,7 +36,7 @@ func main() {
 	productHandler := handlers.NewProductHandler(productDB)
 
 	userDB := database.NewUser(db)
-	userHandler := handlers.NewUserHandler(userDB)
+	userHandler := handlers.NewUserHandler(userDB, config.TokenAuth, config.JWTExperesIn)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -47,6 +47,7 @@ func main() {
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
 
 	r.Post("/users", userHandler.CreateUser)
+	r.Post("/users/generate_token", userHandler.GetJWT)
 
 	// http.HandleFunc("/products", productHandler.CreateProduct)
 	err = http.ListenAndServe(":3000", r)
